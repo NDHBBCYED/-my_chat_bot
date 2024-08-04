@@ -6,17 +6,17 @@ def get_response(user_input):
     response = check_all_messages(split_message)
     return response
 
-def message_probability(user_message, recognized_words, single_response=False, required_word=[]):
+def message_probability(user_message, recognized_words, single_response=False, required_words=[]):
     message_certainty = 0
     has_required_words = True
 
     for word in user_message:
         if word in recognized_words:
-            message_certainty +=1
+            message_certainty += 1
 
-    percentage = float(message_certainty) / float (len(recognized_words))
+    percentage = float(message_certainty) / float(len(recognized_words))
 
-    for word in required_word:
+    for word in required_words:
         if word not in user_message:
             has_required_words = False
             break
@@ -26,25 +26,51 @@ def message_probability(user_message, recognized_words, single_response=False, r
         return 0
 
 def check_all_messages(message):
-        highest_prob = {}
+    highest_prob = {}
 
-        def response(bot_response, list_of_words, single_response = False, required_words = []):
-            nonlocal highest_prob
-            highest_prob[bot_response] = message_probability(message, list_of_words, single_response, required_words)
+    def response(bot_response, list_of_words, single_response=False, required_words=[]):
+        nonlocal highest_prob
+        highest_prob[bot_response] = message_probability(message, list_of_words, single_response, required_words)
 
-        response('Hola', ['hola', 'klk', 'saludos', 'buenas'], single_response = True)
-        response('Estoy bien y tu?', ['como', 'estas', 'va', 'vas', 'sientes'], required_words=['como'])
-        response('Estamos ubicados en la calle 23 numero 123', ['ubicados', 'direccion', 'donde', 'ubicacion'], single_response=True)
-        response('Siempre a la orden', ['gracias', 'te lo agradezco', 'thanks'], single_response=True)
+    # Preguntas y respuestas sobre el ITLA
+    response('El ITLA está ubicado en las America Highway, Km 27, la caleta, Santo Domingo, República Dominicana.', 
+             ['donde', 'ubicado', 'direccion', 'ubicacion', 'itla'], required_words=['itla'])
+    
+    response('El ITLA ofrece carreras técnicas en áreas como Software, Redes, Multimedia, Mecatrónica y más.', 
+             ['que', 'carreras', 'ofrecen', 'oferta', 'academica', 'itla'], required_words=['carreras'])
+    
+    response('El ITLA es un instituto técnico superior especializado en tecnología y formación técnica profesional.', 
+             ['que', 'es', 'significa', 'itla', 'instituto'], required_words=['itla'])
+    
+    response('Para inscribirte en el ITLA debes visitar su sitio web y seguir el proceso de admisión en línea.', 
+             ['como', 'inscribirme', 'inscripcion', 'admisión', 'entrar', 'itla'], required_words=['inscribirme'])
+    
+    response('La duración de las carreras en el ITLA varía, pero generalmente son programas de 2 a 3 años.', 
+             ['cuanto', 'dura', 'tiempo', 'duración', 'carrera', 'itla'], required_words=['carrera'])
+    
+    response('El ITLA es conocido por su calidad educativa en el área de la tecnología y la formación técnica.', 
+             ['porque', 'destaca', 'reconocido', 'famoso', 'itla'], required_words=['itla'])
+    
+    response('Sí, el ITLA ofrece becas para estudiantes con excelente rendimiento académico.', 
+             ['hay', 'ofrecen', 'becas', 'ayuda', 'financiamiento', 'itla'], required_words=['becas'])
+    
+    response('Puedes contactar al ITLA llamando al (809) 738-4852 o visitando su página web.', 
+             ['como', 'contactar', 'telefono', 'contacto', 'itla'], required_words=['contactar'])
+    
+    response('El ITLA tiene convenios con diversas empresas para facilitar la inserción laboral de sus egresados.', 
+             ['hay', 'bolsa', 'trabajo', 'insercion', 'laboral', 'itla'], required_words=['trabajo'])
+    
+    response('El ITLA organiza talleres, charlas y eventos tecnológicos abiertos al público en general.', 
+             ['que', 'eventos', 'actividades', 'talleres', 'organiza', 'itla'], required_words=['eventos'])
 
-        best_match = max(highest_prob, key=highest_prob.get)
-        #print(highest_prob)
+    best_match = max(highest_prob, key=highest_prob.get)
+    # print(highest_prob)
 
-        return unknown() if highest_prob[best_match] < 1 else best_match
+    return unknown() if highest_prob[best_match] < 1 else best_match
 
 def unknown():
-    response = ['puedes decirlo de nuevo?', 'No estoy seguro de lo quieres', 'búscalo en google a ver que tal'][random.randrange(3)]
+    response = ['¿Puedes decirlo de nuevo?', 'No estoy seguro de lo que quieres decir', 'Búscalo en Google a ver qué tal'][random.randrange(3)]
     return response
 
 while True:
-    print("Bot: " + get_response(input('You: ')))
+    print("Bot: " + get_response(input('Tú: ')))
